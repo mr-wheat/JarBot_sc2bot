@@ -34,7 +34,9 @@ class JarBot(BotAI):
     """
     async def on_step(self, iteration: int):
         print(f"The iteration is {iteration}")
-        DESIRED_RAX_COUNT = round(1 + iteration/425)
+        DESIRED_RAX_COUNT = round(1 + iteration/500) # Change later. 
+
+
         if self.townhalls:
             # thus we have command center
             command_center = self.townhalls.random
@@ -66,15 +68,29 @@ class JarBot(BotAI):
                     rax_placement_posistion = self.main_base_ramp.barracks_correct_placement
                 else:
                     target_rax = self.structures(unit_type["rax"]).closest_to(self.start_location)
-                    rax_placement_posistion = target_supply.position.towards(self.start_location, random.randrange(8, 15))
+                    rax_placement_posistion = target_rax.position.towards(self.start_location, random.randrange(8, 15))
                 if worker and rax_placement_posistion: #Worker and Placement of Barrack was Found
                     await self.build(unit_type['rax'], near = rax_placement_posistion)
+
+            for rax in self.structures(unit_type["rax"]).ready.idle:
+                if self.supply_cap != 200: # max supply
+                    if not self.can_afford(unit_type["marine"]):
+                        break
+                    rax.train(unit_type["marine"])
 
         else:
             # We currently do not have any bases
             if self.can_afford(unit_type["cc"]):
                 await self.expand_now()
 
+        if self.units(unit_type["marine"]).amount >= 15:
+            if self.enemy_units:
+                for marine in self.units(unit_type["marine"]).idle:
+                    marine.attack(random.choice(self.enemy_units))
+            
+            elif self.enemy_structures:
+                for marine in self.units(unit_type["marine"]).idle:
+                    marine.attack(random.choice(self.enemy_structures))
 def main():
 # Command containing Info to launch an SCII Instance with the Bot
     run_game(
