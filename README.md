@@ -1,2 +1,4 @@
 # JarBot_sc2bot
-Starcraft II is a asymmetric, real time strategy game in which players control one of three fractions (The Terrans, Zerg, or Protoss) and are tasked with destorying the other player(s) bases in order to win.  
+Starcraft II is a asymmetric, real time strategy game in which players control one of three fractions: The human space-cowboys called the Terran, the assimilating alien species known as the Zerg, and lastly the highly advance psionic Protoss. In the game, the player is tasked with building and managing a small base, gradually building up their forces and technology in order to destroy the other player(s) bases in order to win. Since the original iteration of the series in 1996, passionate programmers have created their own AI players. While these AI players often had to employ non-standard strategies due to limitations of the first game, Starcraft II have proven a new frontier for more advance bots with company like google even practicing by their deep learning based “AlphaStar”.
+
+“JarBot” is my personal side project, using the deep learning python wrapper “python-sc2”. [Fill out Later]
