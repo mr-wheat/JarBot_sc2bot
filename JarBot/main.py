@@ -3,13 +3,14 @@
 # Standard Lib Imports
 import os
 import random
-import configparser 
+import configparser
+from matplotlib.pyplot import close 
 
 # Third Party Imports
 from sc2 import maps
 from sc2.player import Bot, Computer
 from sc2.bot_ai import BotAI
-from sc2.data import Difficulty, Race
+from sc2.data import Alert, Difficulty, Race
 from sc2.main import run_game
 from sc2.position import Point2, Point3
 from sc2.constants import *
@@ -32,9 +33,13 @@ class JarBot(BotAI):
     """
     Governs the Bot's behavior through the python_sc2 API.
     """
+    def __init__(self):
+        self.attack_groups = set()
+
+
     async def on_step(self, iteration: int):
         print(f"The iteration is {iteration}")
-        DESIRED_RAX_COUNT = round(1 + iteration/500) # Change later. 
+        DESIRED_RAX_COUNT = round(1 + iteration/400) # Change later. 
 
 
         if self.townhalls:
@@ -44,7 +49,9 @@ class JarBot(BotAI):
 
             # Train workers logic
             if command_center.is_idle and self.can_afford(UnitTypeId.SCV):
-                command_center.train(unit_type["scv"])
+                if self.units(unit_type["scv"]).amount < 16 * self.townhalls.amount:
+                    command_center.train(unit_type["scv"])
+                
 
             # Build Logic: First Supply Depot. One Supply Depot is required to unlock next set of buildings
             elif not self.structures(unit_type["supply"]) and self.already_pending(unit_type["supply"]) == 0:
@@ -91,6 +98,18 @@ class JarBot(BotAI):
             elif self.enemy_structures:
                 for marine in self.units(unit_type["marine"]).idle:
                     marine.attack(random.choice(self.enemy_structures))
+        
+        #for scv in self.workers.idle:
+            #closest_min_patch = self.mineral_field.closest_to(scv)
+            #scv.gather(closest_min_patch.position)
+            #await self.distribute_workers()
+            # closestCC = self.townhalls.ready.closest_to(scv.position)
+            # await self.do(scv.gather(self.state.mineral_field.closest_to(closestCC)))
+        
+        
+        if self.alert(Alert.MineralsExhausted): # When minerals begin to run out, expand
+            if self.can_afford(unit_type["cc"]):
+                await self.expand_now()
 def main():
 # Command containing Info to launch an SCII Instance with the Bot
     run_game(
