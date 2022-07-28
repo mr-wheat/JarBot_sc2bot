@@ -1,0 +1,9 @@
+1. Finish Core AI Programming Loop
+ 1.1 Create list of commands to win 100% against built in sc2 easy AI (10%)
+   a. Buffer Asyc issues (Bot is stuttering with commands)
+   b. Finish Wall In section
+ 1.2 Code several alterative 'build-orders' 
+ 1.3 Examine best performing ones
+ 1.4 Write Code for AI to randomly select a build-order and track preformance at higher base AI
+ 1.5 Standarize Results for ML
+2. 
